@@ -1,0 +1,47 @@
+#include <stdio.h>
+
+#define MAX 100000
+
+int max(int a, int b) {
+    return a > b ? a : b;
+}
+
+int main() {
+    int arr[MAX];
+    int n = 0;
+
+    // Read input until EOF
+    while (scanf("%d", &arr[n]) != EOF) {
+        n++;
+    }
+
+    int prefixSum = 0;
+    int maxLen = 0;
+
+    // Using simple array as hash (shifted index)
+    // We use offset to handle negative sums
+    int offset = 50000;
+    int firstIndex[100000];
+
+    for (int i = 0; i < 100000; i++) {
+        firstIndex[i] = -2; // uninitialized
+    }
+
+    firstIndex[offset] = -1; // prefix sum 0 at index -1
+
+    for (int i = 0; i < n; i++) {
+        prefixSum += arr[i];
+
+        int idx = prefixSum + offset;
+
+        if (firstIndex[idx] == -2) {
+            firstIndex[idx] = i;
+        } else {
+            maxLen = max(maxLen, i - firstIndex[idx]);
+        }
+    }
+
+    printf("%d\n", maxLen);
+
+    return 0;
+}
