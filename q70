@@ -1,0 +1,72 @@
+#include <stdio.h>
+#include <limits.h>
+
+#define MAXN 1000
+#define MAXM 10000
+
+typedef struct {
+    int u, v, w;
+} Edge;
+
+Edge edges[MAXM];
+int dist[MAXN];
+
+void bellmanFord(int n, int m, int src) {
+    
+    // Step 1: Initialize distances
+    for (int i = 0; i < n; i++) {
+        dist[i] = INT_MAX;
+    }
+    dist[src] = 0;
+
+    // Step 2: Relax edges (n-1) times
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < m; j++) {
+            int u = edges[j].u;
+            int v = edges[j].v;
+            int w = edges[j].w;
+
+            if (dist[u] != INT_MAX && dist[u] + w < dist[v]) {
+                dist[v] = dist[u] + w;
+            }
+        }
+    }
+
+    // Step 3: Check for negative cycle
+    for (int j = 0; j < m; j++) {
+        int u = edges[j].u;
+        int v = edges[j].v;
+        int w = edges[j].w;
+
+        if (dist[u] != INT_MAX && dist[u] + w < dist[v]) {
+            printf("NEGATIVE CYCLE\n");
+            return;
+        }
+    }
+
+    // Step 4: Print distances
+    for (int i = 0; i < n; i++) {
+        printf("%d ", dist[i]);
+    }
+    printf("\n");
+}
+
+// Example usage
+int main() {
+    int n = 5, m = 7;
+
+    // edges: u, v, w
+    edges[0] = (Edge){0, 1, 6};
+    edges[1] = (Edge){0, 2, 7};
+    edges[2] = (Edge){1, 2, 8};
+    edges[3] = (Edge){1, 3, 5};
+    edges[4] = (Edge){2, 3, -3};
+    edges[5] = (Edge){3, 4, 2};
+    edges[6] = (Edge){4, 1, -2};
+
+    int src = 0;
+
+    bellmanFord(n, m, src);
+
+    return 0;
+}
